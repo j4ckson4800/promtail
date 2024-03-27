@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -116,7 +116,7 @@ func (rcv *lokiJsonV1Exchanger) Push(streams []*LogStream) error {
 	defer func() { _ = resp.Body.Close() }()
 
 	if !(199 < resp.StatusCode && resp.StatusCode < 300) {
-		messageBody, _ := ioutil.ReadAll(resp.Body)
+		messageBody, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("unexpected response code [code=%d], message: %s",
 			resp.StatusCode, string(messageBody))
 	}
@@ -193,7 +193,7 @@ func (rcv *lokiJsonV1Exchanger) SetBasicAuth(username, password string) {
 }
 
 func (rcv *lokiJsonV1Exchanger) formatMessage(lvl Level, format string, args ...interface{}) string {
-	return lvl.String() + ": " + fmt.Sprintf(format, args...)
+	return fmt.Sprintf(format, args...)
 }
 
 func (rcv *lokiJsonV1Exchanger) isSuccessHTTPCode(code int) bool {

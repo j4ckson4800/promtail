@@ -2,7 +2,7 @@ package promtail
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -59,7 +59,7 @@ func validateIsLokiReady(t *testing.T) {
 	defer func() { _ = resp.Body.Close() }()
 
 	if !(199 < resp.StatusCode && resp.StatusCode < 300) {
-		responseMessage, err := ioutil.ReadAll(resp.Body)
+		responseMessage, err := io.ReadAll(resp.Body)
 		if err != nil {
 			defer t.Errorf("also, failed to read Loki's response message :(")
 		}
